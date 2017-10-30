@@ -11,7 +11,7 @@ public class PredicateObject {
 	
 	 @Override
 	 public int hashCode() {
-		 return predicateObject[0] * 31 + predicateObject[1];
+		 return (predicateObject[0]+":"+predicateObject[1]).hashCode();
 	 }
 
 	@Override

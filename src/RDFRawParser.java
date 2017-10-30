@@ -38,55 +38,21 @@ public final class RDFRawParser {
 			e.printStackTrace();
 		}
 		
-		RequestHandler requestHandler = new RequestHandler();
-		ArrayList<CustomStatement> statements = requestHandler.parse(
-					"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
-					"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> "+
-					"PREFIX owl: <http://www.w3.org/2002/07/owl#>" +
-					"PREFIX ub: <http://swat.cse.lehigh.edu/onto/univ-bench.owl#>"+
+		RequestHandler requestHandler = new RequestHandler(dataHandler);
+		
+		HashSet<Integer> results = requestHandler.exec(
+				"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
+				"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> "+
+				"PREFIX owl: <http://www.w3.org/2002/07/owl#>" +
+				"PREFIX ub: <http://swat.cse.lehigh.edu/onto/univ-bench.owl#>"+
 
-					"SELECT ?x " +
-					"WHERE {?x rdf:type ub:Subj18Student .  ?x rdf:type ub:GraduateStudent . ?x rdf:type ub:ResearchAssistant }");
+				"SELECT ?x " +
+				"WHERE {?x rdf:type ub:Subj18Student .  ?x rdf:type ub:GraduateStudent . ?x rdf:type ub:ResearchAssistant }");
 		
-		
-		
-		//Get min
-		int minSize = Integer.MAX_VALUE;
-		PredicateObject minPredicateObject = null;
-		ArrayList<HashSet<Integer>> subjectList = new ArrayList<>();
-		for(CustomStatement customStatement : statements) {
-			System.out.println("Predicate : " + customStatement.getPredicate());
-			System.out.println("Value : " + customStatement.getPredicate() + " id " + dataHandler.getId(customStatement.getPredicate()));
-			PredicateObject predicateObject = new PredicateObject(dataHandler.getId(customStatement.getPredicate()),dataHandler.getId(customStatement.getObject()));
-			if(minSize > dataHandler.getSize(predicateObject)) {
-				minSize = dataHandler.getSize(predicateObject);
-				minPredicateObject = predicateObject;
-			}
-			
-			subjectList.add(dataHandler.getSubjects(predicateObject));
+		for(int subject : results) {
+			System.out.println(dataHandler.getValue(subject));
 		}
 		
-		System.out.println(minPredicateObject);
 		
-		HashSet<Integer> resultats = new HashSet<>();
-		HashSet<Integer> subjects = dataHandler.getSubjects(minPredicateObject);
-		Queue<Integer> queue = new PriorityQueue<>(subjects);
-		while(queue.size() > 0) {
-			boolean exist = true;
-			int currentSubject = queue.poll();
-			for(HashSet<Integer> subjectSet : subjectList) {
-				if(!subjectSet.contains(currentSubject)) {
-					exist = false;
-					break;
-				}
-			}
-			if(exist) {
-				resultats.add(currentSubject);
-			}
-		}
-		System.out.println(resultats);
-		for (int result : resultats) {
-			System.out.println(dataHandler.getValue(result));
-		}
-	}
+	}		
 }
