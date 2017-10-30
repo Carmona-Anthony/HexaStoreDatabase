@@ -1,21 +1,27 @@
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.PriorityQueue;
-import java.util.Queue;
 
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.Rio;
 import org.openrdf.rio.helpers.RDFHandlerBase;
 
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+
 public final class RDFRawParser {
 	
 	static DataHandler dataHandler = new DataHandler();
 	
+	@Parameter(names = "-debug", description = "Debug mode", arity = 1)
+	private boolean debug = true;
+	
+	@Parameter(names = "--help", help = true)
+	private boolean help = false;
+
+
 	private static class RDFListener extends RDFHandlerBase {
 		
 		@Override
@@ -25,6 +31,27 @@ public final class RDFRawParser {
 	};
 
 	public static void main(String args[]) throws FileNotFoundException {
+		
+		/*
+		 * Parse Options
+		 */
+		
+		 RDFRawParser main = new RDFRawParser();
+		 JCommander jcommander = JCommander.newBuilder().build();
+		 jcommander.setProgramName("HexaStore Playground");
+		 jcommander.addObject(main);
+         jcommander.parse(args);
+		 
+		 if(main.help) {
+			 jcommander.usage();
+		 }
+		 
+	     main.run();
+	}		
+	
+	public void run() throws FileNotFoundException {
+		
+		System.out.println("Debug : " + debug);
 
 		Reader reader = new FileReader(
 				"University0_0.owl.xml");
@@ -52,7 +79,5 @@ public final class RDFRawParser {
 		for(int subject : results) {
 			System.out.println(dataHandler.getValue(subject));
 		}
-		
-		
-	}		
+	}
 }

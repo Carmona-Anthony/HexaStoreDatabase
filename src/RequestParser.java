@@ -23,9 +23,7 @@ public class RequestParser {
 			for (Entry<String, String> entry : prefix.entrySet()) {
 				statement = statement.replaceFirst(entry.getKey(), entry.getValue()).trim();
 			}
-			System.out.println("Statement " + statement);
 			String[] splitStatement = statement.split(" ");
-			System.out.println("Split " + splitStatement[0] + " " + splitStatement[1] + " " + splitStatement[2]);
 			requests.add(new CustomStatement(splitStatement[0],splitStatement[1],splitStatement[2]));
 		}
 		return requests;
@@ -40,8 +38,6 @@ public class RequestParser {
 			String[] aliasToValue = prefixe[i].trim().split(" ",2);
 			String value = aliasToValue[1].substring(aliasToValue[1].indexOf("<") + 1, aliasToValue[1].indexOf(">"));
 			result.put(aliasToValue[0].trim(),value.trim());
-
-			System.out.println(aliasToValue[0] + "," + value);
 		}
 		return result;
 	}

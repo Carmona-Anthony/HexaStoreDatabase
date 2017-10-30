@@ -28,8 +28,6 @@ public class RequestHandler {
 		PredicateObject minPredicateObject = null;
 		ArrayList<HashSet<Integer>> subjectList = new ArrayList<>();
 		for(CustomStatement customStatement : statements) {
-			System.out.println("Predicate : " + customStatement.getPredicate());
-			System.out.println("Value : " + customStatement.getPredicate() + " id " + dataHandler.getId(customStatement.getPredicate()));
 			PredicateObject predicateObject = new PredicateObject(dataHandler.getId(customStatement.getPredicate()),dataHandler.getId(customStatement.getObject()));
 			if(minSize > dataHandler.getSize(predicateObject)) {
 				minSize = dataHandler.getSize(predicateObject);
@@ -38,8 +36,6 @@ public class RequestHandler {
 			
 			subjectList.add(dataHandler.getSubjects(predicateObject));
 		}
-		
-		System.out.println(minPredicateObject);
 		
 		HashSet<Integer> results = new HashSet<>();
 		HashSet<Integer> subjects = dataHandler.getSubjects(minPredicateObject);

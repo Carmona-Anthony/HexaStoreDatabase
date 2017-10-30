@@ -35,7 +35,6 @@ public class DataHandler {
 		if(!values.containsKey(st.getPredicate().stringValue())) {
 			ids.put(compteur, st.getPredicate().stringValue());
 			values.put(st.getPredicate().stringValue(),compteur);
-			System.out.println("Predicate : " + st.getPredicate().stringValue());
 			compteur++;
 		}
 		
