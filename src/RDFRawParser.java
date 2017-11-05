@@ -1,7 +1,13 @@
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Reader;
+import java.io.Writer;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import org.openrdf.model.Statement;
 import org.openrdf.rio.RDFFormat;
@@ -10,6 +16,10 @@ import org.openrdf.rio.helpers.RDFHandlerBase;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+
+import DataManaging.DataHandler;
+import Request.RequestController;
+import Utils.CSVUtils;
 
 public final class RDFRawParser {
 	
@@ -20,7 +30,20 @@ public final class RDFRawParser {
 	
 	@Parameter(names = "--help", help = true)
 	private boolean help = false;
-
+	
+	@Parameter(names = "-r", description = "Unary Request to execute", arity=1)
+	private String requete;
+	
+	@Parameter(names = "-i", description = "Input File for Data", arity=1)
+	private String dataIn = "100K.owl";
+	
+	@Parameter(names = "-rf", description = "File that contains requests", arity=1)
+	private String fileNameRequest = "Q_4_location_nationality_gender_type.queryset";
+	
+	@Parameter(names = "-o", description = "CSV result output file", arity=1)
+	private String fileOut = "results.csv";
+	
+	private Writer resultWriter;
 
 	private static class RDFListener extends RDFHandlerBase {
 		
@@ -46,38 +69,89 @@ public final class RDFRawParser {
 			 jcommander.usage();
 		 }
 		 
-	     main.run();
+		 /*
+		  * Start current Benchmark
+		  */
+		 Long start = null;
+		 start = System.currentTimeMillis();
+		 
+		 
+	     try {
+			main.run();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	     
+	     System.out.println("Benchmark: " + (System.currentTimeMillis() - start));
 	}		
 	
-	public void run() throws FileNotFoundException {
+	public void run() throws IOException {
+		//Init writer for fileOut
+		resultWriter = new FileWriter(fileOut);
 		
-		System.out.println("Debug : " + debug);
-
-		Reader reader = new FileReader(
-				"University0_0.owl.xml");
+		//Init the dataHandler
+		createDatabase();
+		RequestController requestController = new RequestController(dataHandler);
+		
+		//If parameter for requestFile isn't empty solve file and not unary request
+		if(!fileNameRequest.equals("")) {
+			HashMap<String, HashSet<String>> results = requestController.solve(new FileReader(fileNameRequest));
+			//Iterate on map to write in csv file 
+			
+			CSVUtils.writeLine(resultWriter, "sep=,");
+		    CSVUtils.newLine(resultWriter);
+		    
+			for(Entry<String, HashSet<String>> entry : results.entrySet()) {
+			    String request = entry.getKey();
+			    HashSet<String> result = entry.getValue();
+			 
+			    CSVUtils.newLine(resultWriter);
+			    CSVUtils.writeLine(resultWriter, request);
+			    CSVUtils.newLine(resultWriter);
+			    CSVUtils.writeLine(resultWriter, result);
+			    
+			}
+		}
+		else {
+			if(!requete.equals("")) {
+				HashSet<String> results = requestController.solve(requete);
+				//Write result for unary in csv file
+				for(String result : results) {
+					CSVUtils.writeLine(resultWriter, result);
+				}
+			}
+		}
+		
+		resultWriter.flush();
+		resultWriter.close();
+	}
+	
+	/**
+	 * Create the Database (Index + Dictionnary)
+	 * @throws FileNotFoundException
+	 */
+	public void createDatabase() throws FileNotFoundException {
+		
+		Reader reader = new FileReader(dataIn);
 
 		org.openrdf.rio.RDFParser rdfParser = Rio
 				.createParser(RDFFormat.RDFXML);
 		rdfParser.setRDFHandler(new RDFListener());
+		
+		System.out.println("---------- Creation de la base ----------");
+		long startTime = System.nanoTime();
+		
 		try {
 			rdfParser.parse(reader, "");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		RequestHandler requestHandler = new RequestHandler(dataHandler);
-		
-		HashSet<Integer> results = requestHandler.exec(
-				"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
-				"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> "+
-				"PREFIX owl: <http://www.w3.org/2002/07/owl#>" +
-				"PREFIX ub: <http://swat.cse.lehigh.edu/onto/univ-bench.owl#>"+
-
-				"SELECT ?x " +
-				"WHERE {?x rdf:type ub:Subj18Student .  ?x rdf:type ub:GraduateStudent . ?x rdf:type ub:ResearchAssistant }");
-		
-		for(int subject : results) {
-			System.out.println(dataHandler.getValue(subject));
-		}
+		long endTime = System.nanoTime();
+		long duration = (endTime - startTime);
+		long seconds = (duration / 1000) % 60;
+		String formatedSeconds = String.format("(0.%d seconds)", seconds);
+		System.out.println("Create Database = " + formatedSeconds);
 	}
 }
