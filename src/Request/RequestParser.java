@@ -61,19 +61,25 @@ public class RequestParser {
 		
 		ArrayList<CustomStatement> requests = new ArrayList<>();
 		
-		String[] statements = requete.substring(requete.indexOf("{") + 1, requete.indexOf("}")).split(" . ");
+		String result = requete.substring(requete.indexOf("{") + 1, requete.indexOf("}"));
+		result = result.trim();
+		//System.out.println("Result :" + result);
+		String regex = " \\.";
+		String[] statements = result.split(regex);
+		
 		for(String statement : statements) {
+			//System.out.println("Clause " + statement.trim());
 			for (Entry<String, String> entry : prefix.entrySet()) {
 				statement = statement.replaceFirst(entry.getKey(), entry.getValue()).trim();
 			}
 			String[] splitStatement = statement.split(" ");
-			
-			//If uri contains < > takes substring
+
+			// If uri contains < > takes substring
 			splitStatement[0] = splitStatement[0].replace("<", "").replace(">", "").trim();
 			splitStatement[1] = splitStatement[1].replace("<", "").replace(">", "").trim();
 			splitStatement[2] = splitStatement[2].replace("<", "").replace(">", "").trim();
-			
-			requests.add(new CustomStatement(splitStatement[0],splitStatement[1],splitStatement[2]));
+		
+			requests.add(new CustomStatement(splitStatement[0], splitStatement[1], splitStatement[2]));
 		}
 		return requests;
 	}

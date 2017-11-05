@@ -39,15 +39,24 @@ public class RequestController {
 	 * @param fileReader the file that contains all requests
 	 * @return the list of results <Request , List of results>
 	 */
-	public HashMap<String, HashSet<String>> solve(FileReader fileReader) {
+	public HashMap<Integer, HashSet<String>> solve(FileReader fileReader) {
 		/**
 		 * Optimize reading for request storage
 		 */
+		
+		long start = System.currentTimeMillis();
+		
 		ArrayList<String> requests = requestParser.parseFile(fileReader);
-		HashMap<String, HashSet<String>> results = new HashMap<>();
+		
+		HashMap<Integer, HashSet<String>> results = new HashMap<>();
+		int compteur = 0;
 		for (String request : requests) {
-			 results.put(request, solve(request));
+			compteur++;
+			results.put(compteur, solve(request));
 		}
+		System.out.println(compteur);
+		
+		System.out.println("Query pre-processing time : " + (System.currentTimeMillis() - start));
 		
 		return results;
 	}
@@ -59,11 +68,12 @@ public class RequestController {
 	 */
 	public HashSet<String> solve(String request) {
 		
-		System.out.println("Start Request : " + request);
-		System.out.println("---------- Execution de la requete ----------");
-		long startTime = System.nanoTime();
+		long start = System.currentTimeMillis();
 		
 		ArrayList<CustomStatement> statements = requestParser.parse(request);
+		
+		System.out.println("Query pre-processing time : " + (System.currentTimeMillis() - start));
+		
 		HashSet<Integer> idResults = requestSolver.solve(dataHandler, statements);
 		
 		HashSet<String> finalResults = new HashSet<>();
@@ -71,14 +81,6 @@ public class RequestController {
 		for(int subject : idResults) {
 			finalResults.add(dataHandler.getValue(subject));
 		}
-		
-		long endTime = System.nanoTime();
-		long duration = (endTime - startTime);
-		long seconds = (duration / 1000) % 60;
-		// formatedSeconds = (0.xy seconds)
-		String formatedSeconds = String.format("(0.%d seconds)", seconds);
-		System.out.println("Execution = " + formatedSeconds);
-		// i.e actual formatedSeconds = (0.52 seconds)
 		
 		return finalResults;
 		

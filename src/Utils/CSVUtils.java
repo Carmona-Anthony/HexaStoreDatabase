@@ -12,10 +12,19 @@ public class CSVUtils {
         writeLine(w, result, DEFAULT_SEPARATOR, ' ');
     }
     
+    public static void writeLine(Writer w, String[] line) throws IOException {
+    	StringBuilder sb = new StringBuilder();
+    	for(String header : line) {
+    		sb.append(header + ",");
+    	}
+    	w.append(sb.toString());
+    }
+    
     
     public static void writeLine(Writer w, String value) throws IOException {
     	StringBuilder sb = new StringBuilder();
     	sb.append(value);
+    	sb.append("\n");
     	w.append(sb.toString());
     }
 

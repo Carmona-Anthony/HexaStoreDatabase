@@ -27,20 +27,47 @@ public class RequestSolver {
 	 */
 	public HashSet<Integer> solve(DataHandler dataHandler, ArrayList<CustomStatement> statements) {
 		
+		HashSet<Integer> results = new HashSet<>();
+		
 		int minSize = Integer.MAX_VALUE;
 		PredicateObject minPredicateObject = null;
-		ArrayList<HashSet<Integer>> subjectList = new ArrayList<>();
+		HashSet<PredicateObject> clauses = new HashSet<>();
+		
 		for(CustomStatement customStatement : statements) {
 			PredicateObject predicateObject = new PredicateObject(dataHandler.getId(customStatement.getPredicate()),dataHandler.getId(customStatement.getObject()));
-			if(minSize > dataHandler.getSize(predicateObject)) {
-				minSize = dataHandler.getSize(predicateObject);
-				minPredicateObject = predicateObject;
-			}
+			clauses.add(predicateObject);
 			
-			subjectList.add(dataHandler.getSubjects(predicateObject));
+			if(dataHandler.getSize(predicateObject) == -1) {
+				return results;
+			}else {
+				if(minSize > dataHandler.getSize(predicateObject)) {
+					minSize = dataHandler.getSize(predicateObject);
+					minPredicateObject = predicateObject;
+				}
+			}
+		}
+		//System.out.println("Clause minimale " + dataHandler.getValue(minPredicateObject.getPredicate()) + " " + dataHandler.getValue(minPredicateObject.getObject()));
+		HashSet<Integer> subjectsMin = new HashSet<>();
+		subjectsMin = dataHandler.getSubjects(minPredicateObject);
+		
+		/*for(Integer subject : subjectsMin) {
+			System.out.println("Liste sujet " + dataHandler.getValue(subject));
+		}*/
+		
+		for (Integer subject : subjectsMin) {
+			boolean exist = true;
+			for (PredicateObject clause : clauses) {
+				//System.out.println("Clause " + dataHandler.getValue(clause.getPredicate()) + " " + dataHandler.getValue(clause.getObject()));
+				if (!dataHandler.exist(subject, clause)) {
+					exist = false;
+					break;
+				}
+			}
+			if (exist)
+				results.add(subject);
 		}
 		
-		HashSet<Integer> results = new HashSet<>();
+		/*HashSet<Integer> results = new HashSet<>();
 		HashSet<Integer> subjects = dataHandler.getSubjects(minPredicateObject);
 		if(subjects != null) {
 			Queue<Integer> queue = new PriorityQueue<>(subjects);
@@ -57,7 +84,7 @@ public class RequestSolver {
 					results.add(currentSubject);
 				}
 			}
-		}		
+		}		*/
 		return results;
 	}
 }

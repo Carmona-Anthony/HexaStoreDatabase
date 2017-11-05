@@ -43,4 +43,7 @@ public class PredicateObject {
 		return predicateObject[1];
 	}
 
+	public String toString() {
+		return "Predicat : " + predicateObject[0] + " Object : " + predicateObject[1];
+	}
 }

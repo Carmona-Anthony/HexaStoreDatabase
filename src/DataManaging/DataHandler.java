@@ -34,7 +34,7 @@ public class DataHandler {
 	 */
 	HashMap<Integer, HashSet<PredicateObject>> spo;
 	
-	/**
+	/*
 	 * Simple counter for value's id
 	 */
 	int counter; 
@@ -79,6 +79,9 @@ public class DataHandler {
 		
 	}
 	
+	public boolean exist(int subject, PredicateObject predicateObject) {
+		return spo.get(subject).contains(predicateObject);
+	}
 	public String getValue(int id) {
 		return ids.get(id);
 	}
@@ -90,9 +93,7 @@ public class DataHandler {
 		return values.get(value);
 	}
 	public int getSize(PredicateObject predicateObject) {
-		if(pos.get(predicateObject) == null) {
-			return 0;
-		}
+		if(pos.get(predicateObject) == null) return -1;
 		return pos.get(predicateObject).size();
 	}
 }
