@@ -37,10 +37,10 @@ public final class RDFRawParser {
 	private String requete;
 	
 	@Parameter(names = "-i", description = "Input File for Data", arity=1)
-	private String dataIn = "500K.owl";
+	private String dataIn = "100K.owl";
 	
 	@Parameter(names = "-rf", description = "File that contains requests", arity=1)
-	private String fileNameRequest = "Q_4_location_nationality_gender_type.queryset";
+	private String fileNameRequest = "Q_1_includes.queryset";
 	
 	@Parameter(names = "-o", description = "CSV result output file", arity=1)
 	private static String fileOut = "results.csv";
@@ -48,9 +48,18 @@ public final class RDFRawParser {
 	@Parameter(names = "-ot", description = "CSV timer result output file", arity = 1)
 	private static String timerOut = "timer.csv";
 	
+	//Writer for csv file that contains all results
 	private Writer resultWriter;
 	
+	//Writer for csv file that contains all timers and benchmarks
+	private Writer timerWriter;
+	
+	//Timer for all execution of the main
 	private static TimerHandler timerHandler = new TimerHandler();
+	
+	//Timer for all the requests
+	private static TimerHandler requestTimerHandler = new TimerHandler();
+	
 
 	private static class RDFListener extends RDFHandlerBase {
 		
@@ -95,12 +104,13 @@ public final class RDFRawParser {
 		//Init writer for fileOut
 		resultWriter = new FileWriter(fileOut);
 		
+		//Init writer for timerOut
+		timerWriter = new FileWriter(timerOut);
+		
 		//Init the dataHandler
 		
 		createDatabase();
-		
-		TimerHandler requestTimerHandler = new TimerHandler();
-		
+	
 		//Create new tour on timer after the creation of indexes and dictionnaries
 		timerHandler.tour("Import Time");
 		
@@ -126,6 +136,7 @@ public final class RDFRawParser {
 			}
 		}
 		else {
+			//if no request file is given as parameter then check if there is a request as parameter
 			if(!requete.equals("")) {
 				HashSet<String> results = requestController.solve(requete);
 				
@@ -144,6 +155,8 @@ public final class RDFRawParser {
 		
 		System.out.println("Timer Handler : \n" + timerHandler);
 		System.out.println("Request timers : \n" + requestTimerHandler );
+		
+		writeTimer();
 	}
 	
 	/**
@@ -163,5 +176,24 @@ public final class RDFRawParser {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Write all timers in the timerWriter
+	 * @throws IOException
+	 */
+	public void writeTimer() throws IOException {
+		
+		CSVUtils.writeLine(timerWriter, "sep=:");
+		CSVUtils.writeLine(timerWriter, "Full Benchmark : ");
+		CSVUtils.newLine(timerWriter);
+		CSVUtils.writeLine(timerWriter, timerHandler.toString());
+		CSVUtils.newLine(timerWriter);
+		CSVUtils.writeLine(timerWriter, "Requests : ");
+		CSVUtils.writeLine(timerWriter, requestTimerHandler.toString());
+		
+		timerWriter.flush();
+		timerWriter.close();
+		
 	}
 }

@@ -9,33 +9,45 @@ import Models.PredicateObject;
 
 /**
  * Class that contains the dictionnaries and indexes for dataManagement of rdf
- * @author Proprietaire
+ * @author 
  *
  */
 public class DataHandler {
 	
-	/*
+	/**
 	 * HashMap <id, Value>
+	 * Size : Number of distincts values in the model
+	 * Access : O(1)
+	 * Add : O(1)
 	 */
 	HashMap<Integer,String> ids;
 	
-	/*
+	/**
 	 * HashMap <Value, id>
+	 * Size : Number of distincts values in the model
+	 * Access : O(1)
+	 * Add : O(1)
 	 */
 	HashMap<String,Integer> values;
 	
-	/*
+	/**
 	 * HashMap that contains for a couple <Predicate,Object> the list of subjects associated
+	 * Size : Number of distinct couples <Predicate,Object> * number of subjects associated
+	 * Access : O(1)
+	 * Add : O(1)
 	 */
 	HashMap<PredicateObject, HashSet<Integer>> pos;
 	
-	/*
+	/**
 	 * HashMap that contains for a subject the list of couple <Predicate,Object> associated
+	 * Size : Number of distinct couples <Predicate,Object> * number of subjects associated
+	 * Access : O(1)
+	 * Add : O(1)
 	 */
 	HashMap<Integer, HashSet<PredicateObject>> spo;
 	
-	/*
-	 * Simple counter for value's id
+	/**
+	 * Simple counter for mapping between value and id
 	 */
 	int counter; 
 	
@@ -79,21 +91,49 @@ public class DataHandler {
 		
 	}
 	
+	/**
+	 * Check for a given subject if he is associated with a given couple <PredicateObject>
+	 * @param subject 
+	 * @param predicateObject
+	 * @return true if the subject if associated with the given predicateObject else false
+	 */
 	public boolean exist(int subject, PredicateObject predicateObject) {
 		return spo.get(subject).contains(predicateObject);
 	}
-	public String getValue(int id) {
-		return ids.get(id);
-	}
+	/**
+	 * Get all subjects associated with a predicateObject
+	 * @param predicateObject
+	 * @return the list of subjects associated with the given predicateObject
+	 */
 	public HashSet<Integer> getSubjects(PredicateObject predicateObject){
 		return pos.get(predicateObject);
 	}
 	
-	public int getId(String value) {
-		return values.get(value);
-	}
+	/**
+	 * Get the number of subjects associated with a couple predicateObject
+	 * @param predicateObject
+	 * @return the number of subjects associated with a couple predicateObject
+	 */
 	public int getSize(PredicateObject predicateObject) {
 		if(pos.get(predicateObject) == null) return -1;
 		return pos.get(predicateObject).size();
+	}
+	
+	/**
+	 * Get the string value for a given id
+	 * @param id
+	 * @return the value for a given id
+	 */
+	public String getValue(int id) {
+		return ids.get(id);
+	}
+	
+	/**
+	 * Get the id for a string value
+	 * @param value
+	 * @return the id associated with a given string value
+	 */
+	public int getId(String value) {
+		return values.get(value);
 	}
 }

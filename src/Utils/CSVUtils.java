@@ -33,7 +33,9 @@ public class CSVUtils {
     }
     
     public static void newLine(Writer w) throws IOException {
-    	writeLine(w,"\n");
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("\n");
+    	w.append(sb.toString());
     }
 
     //https://tools.ietf.org/html/rfc4180
@@ -52,7 +54,6 @@ public class CSVUtils {
         boolean first = true;
 
         //default customQuote is empty
-
         if (separators == ' ') {
             separators = DEFAULT_SEPARATOR;
         }

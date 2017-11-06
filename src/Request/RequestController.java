@@ -53,18 +53,19 @@ public class RequestController {
 	 * @return the list of results <Request , List of results>
 	 */
 	public HashMap<Integer, HashSet<String>> solve(FileReader fileReader) {
-		/**
-		 * Optimize reading for request storage
-		 */
-		
-		ArrayList<String> requests = requestParser.parseFile(fileReader);
-		
+		// Complexity : Parsing(O(P) + O(P) * O(C)) + (Solve(O(C) + O(C) * O(N))* O(M))
+		// O(C) : Number of clauses
+		// O(P) : Number of prefixes
+		// O(N) : Number of subjects
+		// O(M) : Number of requests
+		ArrayList<String> requests = requestParser.parseFile(fileReader); // O(P) + O(P) * O(C)
+
 		HashMap<Integer, HashSet<String>> results = new HashMap<>();
 		int compteur = 0;
 		for (String request : requests) {
 			compteur++;
 			results.put(compteur, solve(request));
-			
+
 			timerHandler.tour("R" + compteur);
 		}
 		return results;
@@ -78,13 +79,15 @@ public class RequestController {
 	public HashSet<String> solve(String request) {
 		
 		ArrayList<CustomStatement> statements = requestParser.parse(request);
-		
-		HashSet<Integer> idResults = requestSolver.solve(dataHandler, statements);
-		
 		HashSet<String> finalResults = new HashSet<>();
 		
-		for(int subject : idResults) {
-			finalResults.add(dataHandler.getValue(subject));
+		if(statements != null) {
+			
+			HashSet<Integer> idResults = requestSolver.solve(dataHandler, statements);
+			
+			for(int subject : idResults) {
+				finalResults.add(dataHandler.getValue(subject));
+			}
 		}
 		
 		return finalResults;

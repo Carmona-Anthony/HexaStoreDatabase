@@ -7,6 +7,9 @@ package Models;
  */
 public class PredicateObject {
 	
+	final static int PREDICATE = 0;
+	final static int OBJECT = 1;
+	
 	/**
 	 * An array to store the couple predicate object. Array[0] = predicate and Array[1] = object
 	 */
@@ -14,8 +17,8 @@ public class PredicateObject {
 	
 	public PredicateObject(int predicate, int object){
 		predicateObject = new int[2];
-		predicateObject[0] = predicate;
-		predicateObject[1] = object;
+		predicateObject[PREDICATE] = predicate;
+		predicateObject[OBJECT] = object;
 	}
 	
 	/**
@@ -23,7 +26,7 @@ public class PredicateObject {
 	 */
 	 @Override
 	 public int hashCode() {
-		 return (predicateObject[0]+":"+predicateObject[1]).hashCode();
+		 return (predicateObject[PREDICATE]+":"+predicateObject[OBJECT]).hashCode();
 	 }
 	 
 	@Override
@@ -36,14 +39,14 @@ public class PredicateObject {
 	}
 	
 	public int getPredicate() {
-		return predicateObject[0];
+		return predicateObject[PREDICATE];
 	}
 	
 	public int getObject() {
-		return predicateObject[1];
+		return predicateObject[OBJECT];
 	}
 
 	public String toString() {
-		return "Predicat : " + predicateObject[0] + " Object : " + predicateObject[1];
+		return "Predicat : " + predicateObject[PREDICATE] + " Object : " + predicateObject[OBJECT];
 	}
 }

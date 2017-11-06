@@ -26,14 +26,17 @@ public class RequestSolver {
 	 * @return Result list that contains the ids of the subjects
 	 */
 	public HashSet<Integer> solve(DataHandler dataHandler, ArrayList<CustomStatement> statements) {
-		
+		// Complexity : O(C) + O(C) * O(N) 
+		// O(C) : Number of clauses
+		// O(N) : Number of subjects
 		HashSet<Integer> results = new HashSet<>();
 		
 		int minSize = Integer.MAX_VALUE;
 		PredicateObject minPredicateObject = null;
 		HashSet<PredicateObject> clauses = new HashSet<>();
 		
-		for(CustomStatement customStatement : statements) {
+		//Get the clause that return the minimal number of subjects and the list of subjects associated
+		for(CustomStatement customStatement : statements) { //O(C) with c number of clauses
 			PredicateObject predicateObject = new PredicateObject(dataHandler.getId(customStatement.getPredicate()),dataHandler.getId(customStatement.getObject()));
 			clauses.add(predicateObject);
 			
@@ -46,20 +49,19 @@ public class RequestSolver {
 				}
 			}
 		}
-		
+		//for each subjects found earlier (Minimal predicate object result) check if the subject is associated with each clause of the request
 		HashSet<Integer> subjectsMin = new HashSet<>();
-		subjectsMin = dataHandler.getSubjects(minPredicateObject);
+		subjectsMin = dataHandler.getSubjects(minPredicateObject); //O(1)
 	
-		for (Integer subject : subjectsMin) {
+		for (Integer subject : subjectsMin) { //Worst Case O(N) with n number of subjects
 			boolean exist = true;
-			for (PredicateObject clause : clauses) {
-				if (!dataHandler.exist(subject, clause)) {
+			for (PredicateObject clause : clauses) { //O(C)
+				if (!dataHandler.exist(subject, clause)) { //O(1)
 					exist = false;
 					break;
 				}
 			}
-			if (exist)
-				results.add(subject);
+			if (exist) results.add(subject);
 		}
 		return results;
 	}

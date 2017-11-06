@@ -24,13 +24,24 @@ public class RequestParser {
 	 * @return A list of clauses
 	 */
 	public ArrayList<CustomStatement> parse(String request) {
-		
+		// Complexity : O(P) + O(P) * O(C)
+		// O(C) : Number of clauses
+		// O(P) : Number of prefixes
+		request = request.trim();
 		String[] split = request.split("SELECT");
-		String prefixes = split[0];
-		String requete = split[1];
-		HashMap<String, String> prefix = getPrefixes(prefixes);
 		
-		return parseSelect(request,prefix);
+		String prefixes = null;
+		String requete = null;
+		HashMap<String, String> prefix = new HashMap<>();
+		
+		if (!request.isEmpty() || !request.equals("")) {
+			prefixes = split[0];
+			requete = split[1];
+			prefix = getPrefixes(prefixes); //O(P)
+			return parseSelect(request,prefix); //O(C) * O(P)
+		}
+		
+		return null;
 	}
 	
 	/**
@@ -60,18 +71,24 @@ public class RequestParser {
 	private ArrayList<CustomStatement> parseSelect(String requete,HashMap<String, String> prefix) {
 		
 		ArrayList<CustomStatement> requests = new ArrayList<>();
-		
+		//Get the substring between { } to get each clauses
 		String result = requete.substring(requete.indexOf("{") + 1, requete.indexOf("}"));
+		
+		//Remove every blank space around the result
 		result = result.trim();
-		//System.out.println("Result :" + result);
+		
 		String regex = " \\.";
+		
+		//Split by . to get the list of statements/clauses
 		String[] statements = result.split(regex);
 		
-		for(String statement : statements) {
-			//System.out.println("Clause " + statement.trim());
-			for (Entry<String, String> entry : prefix.entrySet()) {
+		for(String statement : statements) { //O(C)
+			
+			//for each clauses replace by the prefix if needed
+			for (Entry<String, String> entry : prefix.entrySet()) { //O(P)
 				statement = statement.replaceFirst(entry.getKey(), entry.getValue()).trim();
 			}
+			//Get each part of the clause (Subject , Predicate , Object)
 			String[] splitStatement = statement.split(" ");
 
 			// If uri contains < > takes substring
@@ -83,11 +100,16 @@ public class RequestParser {
 		}
 		return requests;
 	}
-	
+	/**
+	 * Parse a file from fileReader to get all requests
+	 * @param fileReader
+	 * @return
+	 */
 	public ArrayList<String> parseFile(FileReader fileReader){
-		
+		/*
+		 * Optimize reading for request storage
+		 */
 		ArrayList<String> requests = new ArrayList<String>();
-		
 		try{
 		    BufferedReader in = new BufferedReader(fileReader);
 		    String currentRequest = "";
@@ -100,14 +122,12 @@ public class RequestParser {
 		    	}
 		    	else currentRequest += line;
 		    }
-		    
-		    requests.add(currentRequest);
-		    
+		    if(!currentRequest.isEmpty() || !currentRequest.equals("")) {
+			    requests.add(currentRequest);   
+		    }
 		}catch(Exception e){
 		    e.printStackTrace();
-		}
-		
+		}	
 		return requests;
 	}
-
 }
