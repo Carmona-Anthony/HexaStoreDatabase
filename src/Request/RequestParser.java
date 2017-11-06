@@ -9,7 +9,7 @@ import Models.CustomStatement;
 
 /**
  * Class that handle the parsing of a SPARQL Request
- * @author Proprietaire
+ * @author
  *
  */
 public class RequestParser {

@@ -10,7 +10,7 @@ import Models.PredicateObject;
 
 /**
  * Class that handle the request solving
- * @author Proprietaire
+ * @author
  *
  */
 public class RequestSolver {
@@ -46,18 +46,13 @@ public class RequestSolver {
 				}
 			}
 		}
-		//System.out.println("Clause minimale " + dataHandler.getValue(minPredicateObject.getPredicate()) + " " + dataHandler.getValue(minPredicateObject.getObject()));
+		
 		HashSet<Integer> subjectsMin = new HashSet<>();
 		subjectsMin = dataHandler.getSubjects(minPredicateObject);
-		
-		/*for(Integer subject : subjectsMin) {
-			System.out.println("Liste sujet " + dataHandler.getValue(subject));
-		}*/
-		
+	
 		for (Integer subject : subjectsMin) {
 			boolean exist = true;
 			for (PredicateObject clause : clauses) {
-				//System.out.println("Clause " + dataHandler.getValue(clause.getPredicate()) + " " + dataHandler.getValue(clause.getObject()));
 				if (!dataHandler.exist(subject, clause)) {
 					exist = false;
 					break;
@@ -66,25 +61,6 @@ public class RequestSolver {
 			if (exist)
 				results.add(subject);
 		}
-		
-		/*HashSet<Integer> results = new HashSet<>();
-		HashSet<Integer> subjects = dataHandler.getSubjects(minPredicateObject);
-		if(subjects != null) {
-			Queue<Integer> queue = new PriorityQueue<>(subjects);
-			while(queue.size() > 0) {
-				boolean exist = true;
-				int currentSubject = queue.poll();
-				for(HashSet<Integer> subjectSet : subjectList) {
-					if(!subjectSet.contains(currentSubject)) {
-						exist = false;
-						break;
-					}
-				}
-				if(exist) {
-					results.add(currentSubject);
-				}
-			}
-		}		*/
 		return results;
 	}
 }

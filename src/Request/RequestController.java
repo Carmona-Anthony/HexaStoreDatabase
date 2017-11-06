@@ -11,7 +11,7 @@ import Utils.TimerHandler;
 
 /**
  * Controller class for requestSolving
- * @author Proprietaire
+ * @author
  *
  */
 public class RequestController {

@@ -89,9 +89,6 @@ public final class RDFRawParser {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	    
-	    timerHandler.stop();
-	    System.out.println("Benchmark: " + timerHandler.getTime());
 	}		
 	
 	public void run() throws IOException {
@@ -102,10 +99,13 @@ public final class RDFRawParser {
 		
 		createDatabase();
 		
+		TimerHandler requestTimerHandler = new TimerHandler();
+		
 		//Create new tour on timer after the creation of indexes and dictionnaries
 		timerHandler.tour("Import Time");
-
-		RequestController requestController = new RequestController(dataHandler, timerHandler);
+		
+		requestTimerHandler.start();
+		RequestController requestController = new RequestController(dataHandler, requestTimerHandler);
 		
 		//If parameter for requestFile isn't empty solve file and not unary request
 		if(!fileNameRequest.equals("")) {
@@ -127,7 +127,6 @@ public final class RDFRawParser {
 		}
 		else {
 			if(!requete.equals("")) {
-				
 				HashSet<String> results = requestController.solve(requete);
 				
 				//Write result for unary in csv file
@@ -141,9 +140,10 @@ public final class RDFRawParser {
 		resultWriter.flush();
 		resultWriter.close();
 		
-		timerHandler.tour("Query");
+		timerHandler.tour("Query + Print");
 		
 		System.out.println("Timer Handler : \n" + timerHandler);
+		System.out.println("Request timers : \n" + requestTimerHandler );
 	}
 	
 	/**

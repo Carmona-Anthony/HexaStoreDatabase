@@ -33,7 +33,7 @@ public class TimerHandler {
 	 * Start the timer and store the start value
 	 */
 	public void start(){
-		start = System.currentTimeMillis();
+		start = System.nanoTime()/1000000;
 		last = start;
 	}
 	
@@ -41,7 +41,7 @@ public class TimerHandler {
 	 * Stop the timer and store the end value
 	 */
 	public void stop(){
-		end = System.currentTimeMillis();
+		end = System.nanoTime()/1000000;
 		last = end;
 	}
 	
@@ -50,8 +50,8 @@ public class TimerHandler {
 	 * @param key A key for retrieve value
 	 */
 	public void tour(String key){
-		timers.put(key, System.currentTimeMillis() - last);
-		last = System.currentTimeMillis();
+		timers.put(key, System.nanoTime()/1000000 - last);
+		last = System.nanoTime()/1000000;
 	}
 	
 	/**
@@ -83,6 +83,8 @@ public class TimerHandler {
 		    
 		    print += key + " : " + value + "\n";
 		}
+		
+		print += "Benchmark : " + sum;
 		return print;
 	}
 }
