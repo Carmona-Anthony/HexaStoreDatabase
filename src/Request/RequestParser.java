@@ -27,7 +27,7 @@ public class RequestParser {
 		// Complexity : O(P) + O(P) * O(C)
 		// O(C) : Number of clauses
 		// O(P) : Number of prefixes
-		request = request.trim();
+		System.out.println(request);
 		String[] split = request.split("SELECT");
 		
 		String prefixes = null;
@@ -114,17 +114,26 @@ public class RequestParser {
 		    BufferedReader in = new BufferedReader(fileReader);
 		    String currentRequest = "";
 		    String line;
-
+		    
 		    while((line = in.readLine()) != null){
+		    	
 		    	if(line.isEmpty() && !currentRequest.equals("")) {
 		    		requests.add(currentRequest);
 		    		currentRequest = "";
 		    	}
-		    	else currentRequest += line;
-		    }
-		    if(!currentRequest.isEmpty() || !currentRequest.equals("")) {
-			    requests.add(currentRequest);   
-		    }
+		    	else {
+		    		if(line.trim().endsWith("}")) {
+		    			currentRequest += line;
+				    	requests.add(currentRequest);   
+				    	currentRequest = "";
+				    }
+		    		else currentRequest += line;
+		    	}
+			}
+			if (!currentRequest.isEmpty() || !currentRequest.equals("")) {
+				requests.add(currentRequest);
+			}
+		    
 		}catch(Exception e){
 		    e.printStackTrace();
 		}	

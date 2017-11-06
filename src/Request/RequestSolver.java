@@ -37,32 +37,44 @@ public class RequestSolver {
 		
 		//Get the clause that return the minimal number of subjects and the list of subjects associated
 		for(CustomStatement customStatement : statements) { //O(C) with c number of clauses
-			PredicateObject predicateObject = new PredicateObject(dataHandler.getId(customStatement.getPredicate()),dataHandler.getId(customStatement.getObject()));
-			clauses.add(predicateObject);
+			int idPredicate = dataHandler.getId(customStatement.getPredicate());
+			int idObject = dataHandler.getId(customStatement.getObject());
 			
-			if(dataHandler.getSize(predicateObject) == -1) {
-				return results;
-			}else {
-				if(minSize > dataHandler.getSize(predicateObject)) {
-					minSize = dataHandler.getSize(predicateObject);
-					minPredicateObject = predicateObject;
+			//If idPredicate and idObject exists
+			if(idPredicate != -1 && idObject != -1) {
+				PredicateObject predicateObject = new PredicateObject(idPredicate,idObject);
+				
+				clauses.add(predicateObject);
+				
+				if(dataHandler.getSize(predicateObject) == -1) {
+					return results;
+				}else {
+					if(minSize > dataHandler.getSize(predicateObject)) {
+						minSize = dataHandler.getSize(predicateObject);
+						minPredicateObject = predicateObject;
+					}
 				}
 			}
 		}
 		//for each subjects found earlier (Minimal predicate object result) check if the subject is associated with each clause of the request
-		HashSet<Integer> subjectsMin = new HashSet<>();
-		subjectsMin = dataHandler.getSubjects(minPredicateObject); //O(1)
-	
-		for (Integer subject : subjectsMin) { //Worst Case O(N) with n number of subjects
-			boolean exist = true;
-			for (PredicateObject clause : clauses) { //O(C)
-				if (!dataHandler.exist(subject, clause)) { //O(1)
-					exist = false;
-					break;
+
+		if (minPredicateObject != null) {
+			HashSet<Integer> subjectsMin = new HashSet<>();
+			subjectsMin = dataHandler.getSubjects(minPredicateObject); // O(1)
+
+			for (Integer subject : subjectsMin) { // Worst Case O(N) with n number of subjects
+				boolean exist = true;
+				for (PredicateObject clause : clauses) { // O(C)
+					if (!dataHandler.exist(subject, clause)) { // O(1)
+						exist = false;
+						break;
+					}
 				}
+				if (exist)
+					results.add(subject);
 			}
-			if (exist) results.add(subject);
 		}
+
 		return results;
 	}
 }

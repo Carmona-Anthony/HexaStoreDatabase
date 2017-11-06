@@ -125,7 +125,10 @@ public class DataHandler {
 	 * @return the value for a given id
 	 */
 	public String getValue(int id) {
-		return ids.get(id);
+		if(ids.get(id) != null) {
+			return ids.get(id);
+		}
+		return null;
 	}
 	
 	/**
@@ -134,6 +137,9 @@ public class DataHandler {
 	 * @return the id associated with a given string value
 	 */
 	public int getId(String value) {
-		return values.get(value);
+		if(values.get(value) != null) {
+			return values.get(value);
+		}
+		return -1;
 	}
 }
