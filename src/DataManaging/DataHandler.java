@@ -46,6 +46,9 @@ public class DataHandler {
 	 */
 	HashMap<Integer, HashSet<PredicateObject>> spo;
 	
+	
+	HashMap<Integer, HashMap<Integer, HashSet<Integer>>> spo1;
+	HashMap<Integer, HashMap<Integer, HashSet<Integer>>> pos1;
 	/**
 	 * Simple counter for mapping between value and id
 	 */
@@ -67,28 +70,22 @@ public class DataHandler {
 	 */
 	public void add(Statement st) {
 		
-		if(!values.containsKey(st.getSubject().stringValue())) {
-			ids.put(counter, st.getSubject().stringValue());
-			values.put(st.getSubject().stringValue(),counter);
-			counter++;
-		}
-		
-		if(!values.containsKey(st.getPredicate().stringValue())) {
-			ids.put(counter, st.getPredicate().stringValue());
-			values.put(st.getPredicate().stringValue(),counter);
-			counter++;
-		}
-		
-		if(!values.containsKey(st.getObject().stringValue())) {
-			ids.put(counter, st.getObject().stringValue());
-			values.put(st.getObject().stringValue(),counter);
-			counter++;
-		}
+		values.computeIfAbsent(st.getSubject().stringValue(), k-> add(st.getSubject().stringValue()));
+		values.computeIfAbsent(st.getPredicate().stringValue(), k-> add(st.getPredicate().stringValue()));
+		values.computeIfAbsent(st.getObject().stringValue(), k-> add(st.getObject().stringValue()));
 		
 		PredicateObject predicateObject = new PredicateObject(values.get(st.getPredicate().stringValue()), values.get(st.getObject().stringValue()));
 		pos.computeIfAbsent(predicateObject, k -> new HashSet<>()).add(values.get(st.getSubject().stringValue()));
 		spo.computeIfAbsent(values.get(st.getSubject().stringValue()), k-> new HashSet<>()).add(predicateObject);
 		
+	}
+	
+	private int add(String value) {
+		int lastCounter = counter;
+		ids.put(counter, value);
+		values.put(value ,counter);
+		counter++;
+		return lastCounter;
 	}
 	
 	/**

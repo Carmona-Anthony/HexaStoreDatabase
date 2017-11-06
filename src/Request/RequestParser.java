@@ -27,7 +27,6 @@ public class RequestParser {
 		// Complexity : O(P) + O(P) * O(C)
 		// O(C) : Number of clauses
 		// O(P) : Number of prefixes
-		System.out.println(request);
 		String[] split = request.split("SELECT");
 		
 		String prefixes = null;

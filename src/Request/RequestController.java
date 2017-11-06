@@ -65,7 +65,6 @@ public class RequestController {
 		for (String request : requests) {
 			compteur++;
 			results.put(compteur, solve(request));
-
 			timerHandler.tour("R" + compteur);
 		}
 		return results;
