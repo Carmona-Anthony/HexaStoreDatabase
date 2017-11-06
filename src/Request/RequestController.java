@@ -7,6 +7,7 @@ import java.util.HashSet;
 
 import DataManaging.DataHandler;
 import Models.CustomStatement;
+import Utils.TimerHandler;
 
 /**
  * Controller class for requestSolving
@@ -27,11 +28,23 @@ public class RequestController {
 	 * Solver
 	 */
 	RequestSolver requestSolver;
+	/**
+	 * Timer Handler
+	 */
+	TimerHandler timerHandler;
 
 	public RequestController(DataHandler dataHandler){
 		this.requestParser = new RequestParser();
 		this.requestSolver = new RequestSolver();
 		this.dataHandler = dataHandler;
+		this.timerHandler = new TimerHandler();
+	}
+	
+	public RequestController(DataHandler dataHandler, TimerHandler timerHandler){
+		this.requestParser = new RequestParser();
+		this.requestSolver = new RequestSolver();
+		this.dataHandler = dataHandler;
+		this.timerHandler = timerHandler;
 	}
 	
 	/**
@@ -44,8 +57,6 @@ public class RequestController {
 		 * Optimize reading for request storage
 		 */
 		
-		long start = System.currentTimeMillis();
-		
 		ArrayList<String> requests = requestParser.parseFile(fileReader);
 		
 		HashMap<Integer, HashSet<String>> results = new HashMap<>();
@@ -53,11 +64,9 @@ public class RequestController {
 		for (String request : requests) {
 			compteur++;
 			results.put(compteur, solve(request));
+			
+			timerHandler.tour("R" + compteur);
 		}
-		System.out.println(compteur);
-		
-		System.out.println("Query pre-processing time : " + (System.currentTimeMillis() - start));
-		
 		return results;
 	}
 	
@@ -68,11 +77,7 @@ public class RequestController {
 	 */
 	public HashSet<String> solve(String request) {
 		
-		long start = System.currentTimeMillis();
-		
 		ArrayList<CustomStatement> statements = requestParser.parse(request);
-		
-		System.out.println("Query pre-processing time : " + (System.currentTimeMillis() - start));
 		
 		HashSet<Integer> idResults = requestSolver.solve(dataHandler, statements);
 		

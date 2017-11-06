@@ -21,6 +21,7 @@ import com.beust.jcommander.Parameter;
 import DataManaging.DataHandler;
 import Request.RequestController;
 import Utils.CSVUtils;
+import Utils.TimerHandler;
 
 public final class RDFRawParser {
 	
@@ -39,12 +40,17 @@ public final class RDFRawParser {
 	private String dataIn = "500K.owl";
 	
 	@Parameter(names = "-rf", description = "File that contains requests", arity=1)
-	private String fileNameRequest = "Q_3_nationality_gender_type.queryset";
+	private String fileNameRequest = "Q_4_location_nationality_gender_type.queryset";
 	
 	@Parameter(names = "-o", description = "CSV result output file", arity=1)
 	private static String fileOut = "results.csv";
 	
+	@Parameter(names = "-ot", description = "CSV timer result output file", arity = 1)
+	private static String timerOut = "timer.csv";
+	
 	private Writer resultWriter;
+	
+	private static TimerHandler timerHandler = new TimerHandler();
 
 	private static class RDFListener extends RDFHandlerBase {
 		
@@ -73,7 +79,8 @@ public final class RDFRawParser {
 		 /*
 		  * Start current Benchmark
 		  */
-		 Long start = System.currentTimeMillis();
+		 timerHandler = new TimerHandler();
+		 timerHandler.start();
 		 
 		 
 	     try {
@@ -82,8 +89,9 @@ public final class RDFRawParser {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	     
-	     System.out.println("Benchmark: " + (System.currentTimeMillis() - start));
+	    
+	    timerHandler.stop();
+	    System.out.println("Benchmark: " + timerHandler.getTime());
 	}		
 	
 	public void run() throws IOException {
@@ -92,20 +100,17 @@ public final class RDFRawParser {
 		
 		//Init the dataHandler
 		
-		Long start = System.currentTimeMillis();
-		
 		createDatabase();
-		System.out.println("Import time : " + (System.currentTimeMillis() - start));
+		
+		//Create new tour on timer after the creation of indexes and dictionnaries
+		timerHandler.tour("Import Time");
 
-		RequestController requestController = new RequestController(dataHandler);
+		RequestController requestController = new RequestController(dataHandler, timerHandler);
 		
 		//If parameter for requestFile isn't empty solve file and not unary request
 		if(!fileNameRequest.equals("")) {
 			
-			start = System.currentTimeMillis();
-			
 			HashMap<Integer, HashSet<String>> results = requestController.solve(new FileReader(fileNameRequest));
-			System.err.println(results.keySet().size());
 			//Iterate on map to write in csv file 
 			//Separator for excel
 			CSVUtils.writeLine(resultWriter, "sep=,");
@@ -122,7 +127,6 @@ public final class RDFRawParser {
 		}
 		else {
 			if(!requete.equals("")) {
-				start = System.currentTimeMillis();
 				
 				HashSet<String> results = requestController.solve(requete);
 				
@@ -137,7 +141,9 @@ public final class RDFRawParser {
 		resultWriter.flush();
 		resultWriter.close();
 		
-		System.out.println("Query + Display time : " + (System.currentTimeMillis() - start));
+		timerHandler.tour("Query");
+		
+		System.out.println("Timer Handler : \n" + timerHandler);
 	}
 	
 	/**
