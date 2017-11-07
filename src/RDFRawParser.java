@@ -108,13 +108,11 @@ public final class RDFRawParser {
 		timerWriter = new FileWriter(timerOut);
 		
 		//Init the dataHandler
-		
 		createDatabase();
 	
 		//Create new tour on timer after the creation of indexes and dictionnaries
 		timerHandler.tour("Import Time");
 		
-		requestTimerHandler.start();
 		RequestController requestController = new RequestController(dataHandler, requestTimerHandler);
 		
 		//If parameter for requestFile isn't empty solve file and not unary request

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import Models.CustomStatement;
+import Utils.TimerHandler;
 
 /**
  * Class that handle the parsing of a SPARQL Request
@@ -14,8 +15,15 @@ import Models.CustomStatement;
  */
 public class RequestParser {
 	
+	TimerHandler timerHandler;
+	static int counter = 1;
+	
 	RequestParser(){
 
+	}
+	
+	RequestParser(TimerHandler timerHandler){
+		this.timerHandler = timerHandler;
 	}
 	
 	/**
@@ -97,6 +105,10 @@ public class RequestParser {
 		
 			requests.add(new CustomStatement(splitStatement[0], splitStatement[1], splitStatement[2]));
 		}
+		
+		timerHandler.tour("Parsing R" + counter);
+		counter++;
+		
 		return requests;
 	}
 	/**

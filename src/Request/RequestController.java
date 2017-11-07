@@ -41,7 +41,7 @@ public class RequestController {
 	}
 	
 	public RequestController(DataHandler dataHandler, TimerHandler timerHandler){
-		this.requestParser = new RequestParser();
+		this.requestParser = new RequestParser(timerHandler);
 		this.requestSolver = new RequestSolver();
 		this.dataHandler = dataHandler;
 		this.timerHandler = timerHandler;
@@ -63,9 +63,13 @@ public class RequestController {
 		HashMap<Integer, HashSet<String>> results = new HashMap<>();
 		int compteur = 0;
 		for (String request : requests) {
+			if(compteur == 0) {
+				timerHandler.start();
+			}
 			compteur++;
+			timerHandler.tour("R" + compteur , false);
 			results.put(compteur, solve(request));
-			timerHandler.tour("R" + compteur);
+			timerHandler.tour("Execution de la requete R" + compteur);
 		}
 		return results;
 	}
