@@ -34,6 +34,7 @@ public class TimerHandler {
 	public TimerHandler(){
 		timers = new LinkedHashMap<>();
 		showValues = new ArrayList<>();
+		start = 0;
 	}
 	
 	/**
@@ -92,6 +93,16 @@ public class TimerHandler {
 	 */
 	public long getTime(){
 		return end - start;
+	}
+	/**
+	 * Check if timer has already been started
+	 * @return true if timer already started else false
+	 */
+	public boolean isTimerStarted() {
+		if(start == 0) {
+			return false;
+		}
+		else return true;
 	}
 	
 	public String toString(){

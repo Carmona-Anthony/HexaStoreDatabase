@@ -81,6 +81,10 @@ public class RequestController {
 	 */
 	public HashSet<String> solve(String request) {
 		
+		if(!timerHandler.isTimerStarted()) {
+			timerHandler.start();
+		}
+		
 		ArrayList<CustomStatement> statements = requestParser.parse(request);
 		HashSet<String> finalResults = new HashSet<>();
 		

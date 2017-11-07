@@ -37,10 +37,10 @@ public final class RDFRawParser {
 	private String requete;
 	
 	@Parameter(names = "-i", description = "Input File for Data", arity=1)
-	private String dataIn = "./dataset/500K.owl";
+	private String dataIn = "";
 	
 	@Parameter(names = "-rf", description = "File that contains requests", arity=1)
-	private String fileNameRequest = "./queries/Q_3_location_nationality_gender.queryset";
+	private String fileNameRequest = "";
 	
 	@Parameter(names = "-o", description = "CSV result output file", arity=1)
 	private static String fileOut = "results.csv";
@@ -95,7 +95,6 @@ public final class RDFRawParser {
 	     try {
 			main.run();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}		
