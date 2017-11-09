@@ -90,14 +90,12 @@ public class RequestParser {
 		String[] statements = result.split(regex);
 		
 		for(String statement : statements) { //O(C)
-			
 			//for each clauses replace by the prefix if needed
 			for (Entry<String, String> entry : prefix.entrySet()) { //O(P)
 				statement = statement.replaceFirst(entry.getKey(), entry.getValue()).trim();
 			}
 			//Get each part of the clause (Subject , Predicate , Object)
 			String[] splitStatement = statement.split(" ");
-
 			// If uri contains < > takes substring
 			splitStatement[0] = splitStatement[0].replace("<", "").replace(">", "").trim();
 			splitStatement[1] = splitStatement[1].replace("<", "").replace(">", "").trim();

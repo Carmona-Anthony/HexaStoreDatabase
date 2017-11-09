@@ -12,7 +12,6 @@ public class CustomStatement {
 	String object;
 	
 	public CustomStatement(String subject, String predicate, String object) {
-		super();
 		this.subject = subject;
 		this.predicate = predicate;
 		this.object = object;

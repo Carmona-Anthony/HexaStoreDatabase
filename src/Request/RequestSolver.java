@@ -37,6 +37,7 @@ public class RequestSolver {
 		
 		//Get the clause that return the minimal number of subjects and the list of subjects associated
 		for(CustomStatement customStatement : statements) { //O(C) with c number of clauses
+			
 			int idPredicate = dataHandler.getId(customStatement.getPredicate());
 			int idObject = dataHandler.getId(customStatement.getObject());
 			
@@ -49,15 +50,15 @@ public class RequestSolver {
 				if(dataHandler.getSize(predicateObject) == -1) {
 					return results;
 				}else {
-					if(minSize > dataHandler.getSize(predicateObject)) {
-						minSize = dataHandler.getSize(predicateObject);
+					int currentSize = dataHandler.getSize(predicateObject);
+					if(minSize > currentSize) {
+						minSize = currentSize;
 						minPredicateObject = predicateObject;
 					}
 				}
 			}
 		}
 		//for each subjects found earlier (Minimal predicate object result) check if the subject is associated with each clause of the request
-
 		if (minPredicateObject != null) {
 			HashSet<Integer> subjectsMin = new HashSet<>();
 			subjectsMin = dataHandler.getSubjects(minPredicateObject); // O(1)
@@ -70,11 +71,9 @@ public class RequestSolver {
 						break;
 					}
 				}
-				if (exist)
-					results.add(subject);
+				if (exist) results.add(subject);
 			}
 		}
-
 		return results;
 	}
 }

@@ -46,9 +46,6 @@ public class DataHandler {
 	 */
 	HashMap<Integer, HashSet<PredicateObject>> spo;
 	
-	
-	HashMap<Integer, HashMap<Integer, HashSet<Integer>>> spo1;
-	HashMap<Integer, HashMap<Integer, HashSet<Integer>>> pos1;
 	/**
 	 * Simple counter for mapping between value and id
 	 */
@@ -70,9 +67,17 @@ public class DataHandler {
 	 */
 	public void add(Statement st) {
 		
-		values.computeIfAbsent(st.getSubject().stringValue(), k-> add(st.getSubject().stringValue()));
-		values.computeIfAbsent(st.getPredicate().stringValue(), k-> add(st.getPredicate().stringValue()));
-		values.computeIfAbsent(st.getObject().stringValue(), k-> add(st.getObject().stringValue()));
+		if(values.get(st.getSubject().stringValue()) == null) {
+			values.put(st.getSubject().stringValue(), add(st.getSubject().stringValue()));
+		}
+		
+		if(values.get(st.getPredicate().stringValue()) == null) {
+			values.put(st.getPredicate().stringValue(), add(st.getPredicate().stringValue()));
+		}
+		
+		if(values.get(st.getObject().stringValue()) == null) {
+			values.put(st.getObject().stringValue(), add(st.getObject().stringValue()));
+		}
 		
 		PredicateObject predicateObject = new PredicateObject(values.get(st.getPredicate().stringValue()), values.get(st.getObject().stringValue()));
 		pos.computeIfAbsent(predicateObject, k -> new HashSet<>()).add(values.get(st.getSubject().stringValue()));
@@ -112,7 +117,7 @@ public class DataHandler {
 	 * @return the number of subjects associated with a couple predicateObject
 	 */
 	public int getSize(PredicateObject predicateObject) {
-		if(pos.get(predicateObject) == null) return -1;
+		if(!pos.containsKey(predicateObject)) return -1;
 		return pos.get(predicateObject).size();
 	}
 	
@@ -122,7 +127,7 @@ public class DataHandler {
 	 * @return the value for a given id
 	 */
 	public String getValue(int id) {
-		if(ids.get(id) != null) {
+		if(ids.containsKey(id)) {
 			return ids.get(id);
 		}
 		return null;
@@ -134,7 +139,7 @@ public class DataHandler {
 	 * @return the id associated with a given string value
 	 */
 	public int getId(String value) {
-		if(values.get(value) != null) {
+		if(values.containsKey(value)) {
 			return values.get(value);
 		}
 		return -1;

@@ -4,10 +4,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map.Entry;
 
 import org.openrdf.model.Statement;
@@ -40,7 +38,7 @@ public final class RDFRawParser {
 	private String dataIn = "";
 	
 	@Parameter(names = "-rf", description = "File that contains requests", arity=1)
-	private String fileNameRequest = "";
+	private String fileNameRequest = "queries/Q_1_likes.queryset";
 	
 	@Parameter(names = "-o", description = "CSV result output file", arity=1)
 	private static String fileOut = "results.csv";
@@ -134,13 +132,15 @@ public final class RDFRawParser {
 		}
 		else {
 			//if no request file is given as parameter then check if there is a request as parameter
-			if(!requete.equals("")) {
-				HashSet<String> results = requestController.solve(requete);
-				
-				//Write result for unary in csv file
-				for(String result : results) {
-					CSVUtils.writeLine(resultWriter, result);
-					System.out.println(result);
+			if(requete != null) {
+				if(!requete.equals("")) {
+					HashSet<String> results = requestController.solve(requete);
+					
+					//Write result for unary in csv file
+					for(String result : results) {
+						CSVUtils.writeLine(resultWriter, result);
+						System.out.println(result);
+					}
 				}
 			}
 		}

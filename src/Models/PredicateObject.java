@@ -7,18 +7,15 @@ package Models;
  */
 public class PredicateObject {
 	
-	final static int PREDICATE = 0;
-	final static int OBJECT = 1;
-	
 	/**
 	 * An array to store the couple predicate object. Array[0] = predicate and Array[1] = object
 	 */
-	int[] predicateObject;
+	int predicate;
+	int object;
 	
 	public PredicateObject(int predicate, int object){
-		predicateObject = new int[2];
-		predicateObject[PREDICATE] = predicate;
-		predicateObject[OBJECT] = object;
+		this.predicate = predicate;
+		this.object = object;
 	}
 	
 	/**
@@ -26,27 +23,24 @@ public class PredicateObject {
 	 */
 	 @Override
 	 public int hashCode() {
-		 return (predicateObject[PREDICATE]+":"+predicateObject[OBJECT]).hashCode();
+		 return (predicate+":"+object).hashCode();
 	 }
 	 
 	@Override
 	public boolean equals(Object obj) {
 		PredicateObject predicateObject = (PredicateObject) obj;
-		if(predicateObject.getPredicate() == this.getPredicate() && predicateObject.getObject() == this.getObject()) {
-			return true;
-		}
-		return false;
+		return (predicateObject.getPredicate() == this.getPredicate() && predicateObject.getObject() == this.getObject());
 	}
 	
 	public int getPredicate() {
-		return predicateObject[PREDICATE];
+		return predicate;
 	}
 	
 	public int getObject() {
-		return predicateObject[OBJECT];
+		return object;
 	}
 
 	public String toString() {
-		return "Predicat : " + predicateObject[PREDICATE] + " Object : " + predicateObject[OBJECT];
+		return "Predicat : " + predicate + " Object : " + object;
 	}
 }
