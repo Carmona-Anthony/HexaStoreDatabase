@@ -38,7 +38,7 @@ public final class RDFRawParser {
 	private String dataIn = "";
 	
 	@Parameter(names = "-rf", description = "File that contains requests", arity=1)
-	private String fileNameRequest = "queries/Q_1_likes.queryset";
+	private String fileNameRequest = "";
 	
 	@Parameter(names = "-o", description = "CSV result output file", arity=1)
 	private static String fileOut = "results.csv";

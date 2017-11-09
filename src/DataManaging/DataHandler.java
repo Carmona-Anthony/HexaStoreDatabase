@@ -1,4 +1,5 @@
 package DataManaging;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -20,7 +21,7 @@ public class DataHandler {
 	 * Access : O(1)
 	 * Add : O(1)
 	 */
-	HashMap<Integer,String> ids;
+	ArrayList<String> ids;
 	
 	/**
 	 * HashMap <Value, id>
@@ -49,16 +50,13 @@ public class DataHandler {
 	/**
 	 * Simple counter for mapping between value and id
 	 */
-	int counter; 
 	
 	public DataHandler(){
 		
-		ids = new HashMap<>();
+		ids = new ArrayList<>();
 		values = new HashMap<>();
 		pos = new HashMap<>();
 		spo = new HashMap<>();
-		
-		counter = 1;
 	}
 	
 	/**
@@ -67,30 +65,25 @@ public class DataHandler {
 	 */
 	public void add(Statement st) {
 		
-		if(values.get(st.getSubject().stringValue()) == null) {
-			values.put(st.getSubject().stringValue(), add(st.getSubject().stringValue()));
-		}
+		int subjectIndex = add(st.getSubject().stringValue());
+		int predicateIndex = add(st.getPredicate().stringValue());
+		int objectIndex = add(st.getObject().stringValue());
 		
-		if(values.get(st.getPredicate().stringValue()) == null) {
-			values.put(st.getPredicate().stringValue(), add(st.getPredicate().stringValue()));
-		}
-		
-		if(values.get(st.getObject().stringValue()) == null) {
-			values.put(st.getObject().stringValue(), add(st.getObject().stringValue()));
-		}
-		
-		PredicateObject predicateObject = new PredicateObject(values.get(st.getPredicate().stringValue()), values.get(st.getObject().stringValue()));
-		pos.computeIfAbsent(predicateObject, k -> new HashSet<>()).add(values.get(st.getSubject().stringValue()));
-		spo.computeIfAbsent(values.get(st.getSubject().stringValue()), k-> new HashSet<>()).add(predicateObject);
+		PredicateObject predicateObject = new PredicateObject(predicateIndex,objectIndex);
+		pos.computeIfAbsent(predicateObject, k -> new HashSet<>()).add(subjectIndex);
+		spo.computeIfAbsent(subjectIndex, k-> new HashSet<>()).add(predicateObject);
 		
 	}
 	
 	private int add(String value) {
-		int lastCounter = counter;
-		ids.put(counter, value);
-		values.put(value ,counter);
-		counter++;
-		return lastCounter;
+		
+		if(!values.containsKey(value)){ 
+			int counter= values.size(); 
+			ids.add(value);
+			values.put(value ,counter); 
+			return counter; 
+		}
+		return values.get(value); 
 	}
 	
 	/**
@@ -127,7 +120,7 @@ public class DataHandler {
 	 * @return the value for a given id
 	 */
 	public String getValue(int id) {
-		if(ids.containsKey(id)) {
+		if(ids.get(id) != null) {
 			return ids.get(id);
 		}
 		return null;
