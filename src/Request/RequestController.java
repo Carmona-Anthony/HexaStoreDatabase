@@ -86,6 +86,7 @@ public class RequestController {
 		}
 		
 		ArrayList<CustomStatement> statements = requestParser.parse(request);
+		
 		HashSet<String> finalResults = new HashSet<>();
 		
 		if(statements != null) {

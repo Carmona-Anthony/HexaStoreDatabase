@@ -12,19 +12,19 @@ public class TimerHandler {
 	/**
 	 * Long that contains the start of the timer
 	 */
-	long start;
+	double start;
 	/**
 	 * Long that contains the end of the timer
 	 */
-	long end;
+	double end;
 	/**
 	 * Last timer added as a tour, start or stop
 	 */
-	long last;
+	double last;
 	/**
 	 * list of all difference as <key , difference since last>
 	 */
-	LinkedHashMap<String,Long> timers;
+	LinkedHashMap<String,Double> timers;
 	
 	/**
 	 * list of all timers to show
@@ -41,7 +41,7 @@ public class TimerHandler {
 	 * Start the timer and store the start value
 	 */
 	public void start(){
-		start = System.nanoTime()/1000000;
+		start = ((double)System.currentTimeMillis());
 		last = start;
 	}
 	
@@ -49,7 +49,7 @@ public class TimerHandler {
 	 * Stop the timer and store the end value
 	 */
 	public void stop(){
-		end = System.nanoTime()/1000000;
+		end =  ((double)System.currentTimeMillis());
 		last = end;
 	}
 	
@@ -59,9 +59,10 @@ public class TimerHandler {
 	 */
 	public void tour(String key){
 		
-		long currentDiff = System.nanoTime()/1000000 - last;
+		double currentDiff =  ((double)System.currentTimeMillis())- last;
+		if(currentDiff < 1 ) currentDiff = 1;
 		timers.put(key, currentDiff);
-		last = System.nanoTime()/1000000;
+		last =  ((double)System.currentTimeMillis());
 		showValues.add(true);
 	}
 	
@@ -72,9 +73,10 @@ public class TimerHandler {
 	 */
 	public void tour(String key, boolean showValue){
 		
-		long currentDiff = System.nanoTime()/1000000 - last;
+		double currentDiff =  ((double)System.currentTimeMillis()) - last;
+		if (currentDiff < 1) currentDiff = 1;
 		timers.put(key, currentDiff);
-		last = System.nanoTime()/1000000;
+		last =  ((double)System.currentTimeMillis());
 		showValues.add(showValue);
 	}
 	
@@ -83,7 +85,7 @@ public class TimerHandler {
 	 * @param key
 	 * @return the difference time
 	 */
-	public long getTime(String key){
+	public double getTime(String key){
 		return timers.get(key);
 	}
 	
@@ -91,7 +93,7 @@ public class TimerHandler {
 	 * Get the all time between start and end
 	 * @return the time between start and end
 	 */
-	public long getTime(){
+	public double getTime(){
 		return end - start;
 	}
 	/**
@@ -108,16 +110,16 @@ public class TimerHandler {
 	public String toString(){
 		
 		String print = "";
-		long sum = 0;
+		double sum = 0;
 		int counter = 0;
 		
-		for (Entry<String, Long> entry : timers.entrySet()) {
+		for (Entry<String, Double> entry : timers.entrySet()) {
 		    String key = entry.getKey();
-		    long value = entry.getValue();
-		    sum += value;
+		    double value = entry.getValue();
 		    
 		    if(showValues.get(counter)) {
 		    	  print += key + " : " + value + "\n";	
+		    	  sum += value;
 		    }
 		    else print += key + "\n";
 		    

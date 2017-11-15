@@ -45,7 +45,7 @@ public class RequestParser {
 			prefixes = split[0];
 			requete = split[1];
 			prefix = getPrefixes(prefixes); //O(P)
-			return parseSelect(request,prefix); //O(C) * O(P)
+			return parseSelect(requete,prefix); //O(C) * O(P)
 		}
 		
 		return null;

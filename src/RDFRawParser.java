@@ -151,7 +151,7 @@ public final class RDFRawParser {
 		timerHandler.tour("Query + Print");
 		
 		System.out.println("Timer Handler : \n" + timerHandler);
-		System.out.println("Request timers : \n" + requestTimerHandler );
+		//System.out.println("Request timers : \n" + requestTimerHandler );
 		
 		writeTimer();
 	}
