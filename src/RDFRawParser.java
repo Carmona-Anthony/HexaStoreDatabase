@@ -35,10 +35,10 @@ public final class RDFRawParser {
 	private String requete;
 	
 	@Parameter(names = "-i", description = "Input File for Data", arity=1)
-	private String dataIn = "";
+	private String dataIn = "dataset/500K.owl";
 	
 	@Parameter(names = "-rf", description = "File that contains requests", arity=1)
-	private String fileNameRequest = "";
+	private String fileNameRequest = "queries/Q_4_location_nationality_gender_type.queryset";
 	
 	@Parameter(names = "-o", description = "CSV result output file", arity=1)
 	private static String fileOut = "results.csv";

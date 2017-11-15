@@ -32,6 +32,8 @@ public class RequestController {
 	 * Timer Handler
 	 */
 	TimerHandler timerHandler;
+	
+	static int compteur = 0;
 
 	public RequestController(DataHandler dataHandler){
 		this.requestParser = new RequestParser();
@@ -86,13 +88,13 @@ public class RequestController {
 		}
 		
 		ArrayList<CustomStatement> statements = requestParser.parse(request);
-		
+		timerHandler.tour("Parsing R"+compteur, false);
 		HashSet<String> finalResults = new HashSet<>();
 		
 		if(statements != null) {
 			
 			HashSet<Integer> idResults = requestSolver.solve(dataHandler, statements);
-			
+
 			for(int subject : idResults) {
 				finalResults.add(dataHandler.getValue(subject));
 			}
