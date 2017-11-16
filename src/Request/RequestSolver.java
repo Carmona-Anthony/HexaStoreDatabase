@@ -57,6 +57,7 @@ public class RequestSolver {
 					}
 				}
 			}
+			else return results;
 		}
 		//for each subjects found earlier (Minimal predicate object result) check if the subject is associated with each clause of the request
 		if (minPredicateObject != null) {
